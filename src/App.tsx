@@ -31,25 +31,27 @@ function App() {
       </div>
       <div className="container">
         <div className="calculator-box">
-          <h2>Calculadora de moles, noseq noseq</h2>
+          <h2>Calculadora de gramos, moles, moleculas y atomos</h2>
           <div className="operation-box" onMouseLeave={leaveInput}>
+            <input placeholder="Compuesto Quimico Ejemplo: H2O"/>
             <input
               ref={inputRef}
               value={selectedOption}
               onFocus={toggleInput}
               onClick={handleInputClick}
               readOnly
+              placeholder="Tipo de calculo"
             />
             <div className={selectorState ? "selector" : "selector-none"}>
               <ul>
-                <li onClick={() => handleOptionClick("OPT1")}>OPT1</li>
-                <li onClick={() => handleOptionClick("OPT2")}>OPT2</li>
-                <li onClick={() => handleOptionClick("OPT3")}>OPT3</li>
+                <li onClick={() => handleOptionClick("Calcular Moles")}>Calcular Moles</li>
+                <li onClick={() => handleOptionClick("Calcular Moleculas")}>Calcular Moleculas</li>
+                <li onClick={() => handleOptionClick("Calcular Gramos")}>Calcular Gramos</li>
               </ul>
             </div>
             <div className="inputs50">
-              <input />
-              <input />
+              <input placeholder="Ingresa Moles"/>
+              <input placeholder="Ingresa Gramos"/>
             </div>
             <button>Submit</button>
           </div>
