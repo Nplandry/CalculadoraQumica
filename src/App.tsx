@@ -33,5 +33,4 @@ function App() {
     </>
   )
 }
-<!--Ver tema del input-->
 export default App
