@@ -31,7 +31,7 @@ export const InputConfig = () => {
             message = "Masa Molar"
         }
         if(selectedOption == "Calcular Moleculas"){
-            message = "Constante de Avogadro"
+            message = "C.Avogadro"
         }
         if(selectedOption == "Calcular Gramos"){
             message = "Masa Molar"
@@ -47,13 +47,13 @@ export const InputConfig = () => {
             message = "Masa Sustancia"
         }
         if(selectedOption == "Calcular Moleculas"){
-            message = "Cantidad de Moles"
+            message = "C.Moles"
         }
         if(selectedOption == "Calcular Gramos"){
-            message = "Cantidad de Moles"
+            message = "C.Moles"
         }
         if(selectedOption == "Calcular Pje"){
-            message = "Cantidad de Moles"
+            message = "C.Moles"
         }
         return message
     }
