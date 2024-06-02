@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect } from "react";
-import elementsData from '../components/data/ElementsData';
+import React, { useState, useRef } from "react";
+import elementsData from '../components/data/ElementsData'; 
 
 const InputConfig = () => {
   const [selectorState, setSelectorState] = useState(false);
@@ -7,12 +7,61 @@ const InputConfig = () => {
   const [compound, setCompound] = useState("");
   const [input2compound, setNewInput2Value] = useState("");
   const [result, setResult] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalContent, setModalContent] = useState("");
   const inputRef = useRef(null);
-  const formRef = useRef(null);
 
-  const alertConInfo = () => {
-    alert(`Valor del input1: ${compound}\nValor del input2: ${result}\nValor del input2: ${input2compound}\nEl resultado de los moles es igual a ${parseFloat(result) * input2compound} MOL`);
+  const InformacionDelCompuesto = () => {
+      let content = "Informacion del Compuesto \n holamundo \n holamundo \n holamundo" ;
+      setModalContent(content);
+      setIsModalOpen(true);
+  }
+
+/*const content = `Valor del input1: ${compound}\nValor del input2: ${result}\nValor del input2: ${input2compound}\nEl resultado de los moles es igual a ${parseFloat(result) * input2compound} MOL`*/
+const alertConInfo = () => {
+  const optionsMap = {
+      "Calcular Moles": {
+          placeholder: "Masa Molar",
+          content: calculoMoles()
+      },
+      "Calcular Gramos": {
+          placeholder: "Masa Molar",
+          content: calculoGramos()
+      },
+      "Calcular Pje": {
+          placeholder: "Masa Molar",
+          content: "Calcular Pje"
+      },
+      "Calcular Moleculas": {
+          placeholder: "C.Avogadro",
+          content: calculoMoleculas()
+      }
   };
+
+  const selected = optionsMap[selectedOption];
+  
+  if (selected && getInput1Placeholder() === selected.placeholder) {
+      setModalContent(selected.content);
+      setIsModalOpen(true);
+  }
+};
+
+  //Crear una funcion con cada resultado de cada operacion
+  const calculoMoles = () => {
+    let resultado = `Calculo de moles: ${input2compound / parseFloat(result)}`
+    return resultado
+  }
+  const calculoMoleculas = () => {
+    let resultado = `Calculo de moleculas: ${parseFloat(result) * input2compound}`
+    return resultado
+  }
+  const calculoGramos = () => {
+    let resultado = `Calculo de gramos: ${parseFloat(result) * input2compound}`
+    return resultado
+  }
+ // const calculoPje = () => {
+   // let resultado = `Calculo de %: ${}`
+  //}
 
   const toggleInput = () => {
     setSelectorState(!selectorState);
@@ -108,35 +157,50 @@ const InputConfig = () => {
   };
 
   return (
-    <div className="operation-box" onMouseLeave={leaveInput}>
-      <input
-        placeholder="Compuesto Quimico Ejemplo: H2O"
-        value={compound}
-        onChange={handleCompoundChange}
-      />
-      <input
-        ref={inputRef}
-        value={selectedOption}
-        onFocus={toggleInput}
-        onClick={handleInputClick}
-        readOnly
-        placeholder="Tipo de calculo"
-      />
-      <div className={selectorState ? "selector" : "selector-none"}>
-        <ul>
-          <li onClick={() => handleOptionClick("Calcular Moles")}>Calcular Moles</li>
-          <li onClick={() => handleOptionClick("Calcular Moleculas")}>Calcular Moleculas</li>
-          <li onClick={() => handleOptionClick("Calcular Gramos")}>Calcular Gramos</li>
-          <li onClick={() => handleOptionClick("Calcular Pje")}>Calcular % Molar</li>
-        </ul>
+    <>
+      <div className="operation-box" onMouseLeave={leaveInput}>
+        <input
+          placeholder="Compuesto Quimico Ejemplo: H2O"
+          value={compound}
+          onChange={handleCompoundChange}
+        />
+        <input
+          ref={inputRef}
+          value={selectedOption}
+          onFocus={toggleInput}
+          onClick={handleInputClick}
+          readOnly
+          placeholder="Tipo de calculo"
+        />
+        <div className={selectorState ? "selector" : "selector-none"}>
+          <ul>
+            <li onClick={() => handleOptionClick("Calcular Moles")}>Calcular Moles</li>
+            <li onClick={() => handleOptionClick("Calcular Moleculas")}>Calcular Moleculas</li>
+            <li onClick={() => handleOptionClick("Calcular Gramos")}>Calcular Gramos</li>
+            <li onClick={() => handleOptionClick("Calcular Pje")}>Calcular % Molar</li>
+          </ul>
+        </div>
+        <div className="inputs50">
+          <input placeholder={getInput1Placeholder()} value={result} readOnly />
+          <input placeholder={getInput2Placeholder()} value={input2compound} onChange={input2value}/>
+        </div>
+        <button onClick={alertConInfo}>Calcular</button>
+        <button className="info-btn" onClick={InformacionDelCompuesto}>Sobre el Compuesto</button>
       </div>
-      <div className="inputs50">
-        <input placeholder={getInput1Placeholder()} value={result} readOnly />
-        <input placeholder={getInput2Placeholder()} value={input2compound} onChange={input2value} />
-      </div>
-      <button onClick={alertConInfo}>Calcular</button>
-      <button className="info-btn">Sobre el Compuesto</button>
-    </div>
+ 
+      {isModalOpen && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <div className="modal-content">
+              {modalContent.split('\n').map((line, index) => (
+                <p key={index}>{line}</p>
+              ))}
+            </div>
+            <button onClick={() => setIsModalOpen(false)}>Cerrar</button>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 
