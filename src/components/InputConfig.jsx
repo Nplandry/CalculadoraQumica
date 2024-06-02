@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import elementsData from '../components/data/ElementsData'; 
+import elementsData from '../components/data/ElementsData';
 
 const InputConfig = () => {
   const [selectorState, setSelectorState] = useState(false);
@@ -12,56 +12,80 @@ const InputConfig = () => {
   const inputRef = useRef(null);
 
   const InformacionDelCompuesto = () => {
-      let content = "Informacion del Compuesto \n holamundo \n holamundo \n holamundo" ;
-      setModalContent(content);
-      setIsModalOpen(true);
-  }
-
-/*const content = `Valor del input1: ${compound}\nValor del input2: ${result}\nValor del input2: ${input2compound}\nEl resultado de los moles es igual a ${parseFloat(result) * input2compound} MOL`*/
-const alertConInfo = () => {
-  const optionsMap = {
-      "Calcular Moles": {
-          placeholder: "Masa Molar",
-          content: calculoMoles()
-      },
-      "Calcular Gramos": {
-          placeholder: "Masa Molar",
-          content: calculoGramos()
-      },
-      "Calcular Pje": {
-          placeholder: "Masa Molar",
-          content: "Calcular Pje"
-      },
-      "Calcular Moleculas": {
-          placeholder: "C.Avogadro",
-          content: calculoMoleculas()
-      }
+    let content = formatCompoundInfo(compound);
+    setModalContent(content);
+    setIsModalOpen(true);
   };
 
-  const selected = optionsMap[selectedOption];
+  const formatCompoundInfo = (formula) => {
+    const elementRegex = /([A-Z][a-z]*)(\d*)/g;
+    let match;
+    let compoundInfo = [];
+
+    while ((match = elementRegex.exec(formula)) !== null) {
+      const element = match[1];
+      const quantity = parseInt(match[2], 10) || 1;
+      const elementInfo = elementsData[element];
+
+      if (elementInfo) {
+        compoundInfo.push({
+          name: elementInfo.name,
+          symbol: elementInfo.symbol,
+          atomicMass: elementInfo.atomicMass,
+          atomicNumber:elementInfo.atomicNumber,
+          quantity: quantity,
+          stateAtRoomTemp: elementInfo.stateAtRoomTemp
+        });
+      } else {
+        return 'Compuesto no válido';
+      }
+    }
+
+    return compoundInfo;
+  };
+
+  const alertConInfo = () => {
+    const optionsMap = {
+      "Calcular Moles": {
+        placeholder: "Masa Molar",
+        content: calculoMoles()
+      },
+      "Calcular Gramos": {
+        placeholder: "Masa Molar",
+        content: calculoGramos()
+      },
+      "Calcular Pje": {
+        placeholder: "Masa Molar",
+        content: "Calcular Pje"
+      },
+      "Calcular Moleculas": {
+        placeholder: "C.Avogadro",
+        content: calculoMoleculas()
+      }
+    };
+
+    const selected = optionsMap[selectedOption];
   
-  if (selected && getInput1Placeholder() === selected.placeholder) {
+    if (selected && getInput1Placeholder() === selected.placeholder) {
       setModalContent(selected.content);
       setIsModalOpen(true);
-  }
-};
+    }
+  };
 
-  //Crear una funcion con cada resultado de cada operacion
   const calculoMoles = () => {
-    let resultado = `Calculo de moles: ${input2compound / parseFloat(result)}`
-    return resultado
-  }
+    let resultado = `Calculo de moles: ${input2compound / parseFloat(result)}`;
+    return resultado;
+  };
+
   const calculoMoleculas = () => {
-    let resultado = `Calculo de moleculas: ${parseFloat(result) * input2compound}`
-    return resultado
-  }
+    let resultado = `Calculo de moleculas: ${parseFloat(result) * input2compound}`;
+    return resultado;
+  };
+
   const calculoGramos = () => {
-    let resultado = `Calculo de gramos: ${parseFloat(result) * input2compound}`
-    return resultado
-  }
- // const calculoPje = () => {
-   // let resultado = `Calculo de %: ${}`
-  //}
+    let resultado = `Calculo de gramos: ${parseFloat(result) * input2compound}`;
+    return resultado;
+  };
 
   const toggleInput = () => {
     setSelectorState(!selectorState);
@@ -128,7 +152,7 @@ const alertConInfo = () => {
       placeholder = "Masa Molar";
     }
     if (selectedOption === "Calcular Moleculas") {
-      placeholder = "C.Avogadro";
+      placeholder = "N.Avogadro";
     }
     if (selectedOption === "Calcular Gramos") {
       placeholder = "Masa Molar";
@@ -142,16 +166,16 @@ const alertConInfo = () => {
   const getInput2Placeholder = () => {
     let placeholder = "Seleccionar Tipo de Calculo";
     if (selectedOption === "Calcular Moles") {
-      placeholder = "Masa Sustancia";
+      placeholder = "Masa Sustancia (Gramos)";
     }
     if (selectedOption === "Calcular Moleculas") {
-      placeholder = "C.Moles";
+      placeholder = "N.Moles";
     }
     if (selectedOption === "Calcular Gramos") {
-      placeholder = "C.Moles";
+      placeholder = "N.Moles";
     }
     if (selectedOption === "Calcular Pje") {
-      placeholder = "C.Moles";
+      placeholder = "N.Moles";
     }
     return placeholder;
   };
@@ -182,7 +206,7 @@ const alertConInfo = () => {
         </div>
         <div className="inputs50">
           <input placeholder={getInput1Placeholder()} value={result} readOnly />
-          <input placeholder={getInput2Placeholder()} value={input2compound} onChange={input2value}/>
+          <input placeholder={getInput2Placeholder()} value={input2compound} onChange={input2value} />
         </div>
         <button onClick={alertConInfo}>Calcular</button>
         <button className="info-btn" onClick={InformacionDelCompuesto}>Sobre el Compuesto</button>
@@ -191,10 +215,24 @@ const alertConInfo = () => {
       {isModalOpen && (
         <div className="modal-overlay">
           <div className="modal">
+            <h2>
+            {/*Informacion del input1*/}
+            {compound}
+            </h2>
             <div className="modal-content">
-              {modalContent.split('\n').map((line, index) => (
-                <p key={index}>{line}</p>
-              ))}
+              {Array.isArray(modalContent) ? (
+                modalContent.map((info, index) => (
+                  <div key={index} className="element-info">
+                    <h3>{info.name} ({info.symbol})</h3>
+                    <p>Masa Atómica: {info.atomicMass}</p>
+                    <p>Cantidad: {info.quantity}</p>
+                    <p>Numero Atomico: {info.atomicNumber}</p>
+                    <p>Estado: {info.stateAtRoomTemp}</p>
+                  </div>
+                ))
+              ) : (
+                <p>{modalContent}</p>
+              )}
             </div>
             <button onClick={() => setIsModalOpen(false)}>Cerrar</button>
           </div>
