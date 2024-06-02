@@ -1,89 +1,145 @@
 import React, { useState, useRef } from "react";
+import elementsData from '../components/data/ElementsData'; 
 
-export const InputConfig = () => {
-    
-    const [selectorState, setSelectorState] = useState(false);
-    const [selectedOption, setSelectedOption] = useState("");
-    const inputRef = useRef(null);
-  
-    const toggleInput = () => {
-      setSelectorState(!selectorState);
-    };
-  
-    const handleInputClick = () => {
-      setSelectorState(true);
-    };
-  
-    const leaveInput = (e) => {
-      if (!inputRef.current.contains(e.target)) {
-        setSelectorState(false);
-      }
-    };
-  
-    const handleOptionClick = (option) => {
-      setSelectedOption(option);
+const InputConfig = () => {
+  const [selectorState, setSelectorState] = useState(false);
+  const [selectedOption, setSelectedOption] = useState("");
+  const [compound, setCompound] = useState("");
+  const [input2compound, setNewInput2Value] = useState("");
+  const [result, setResult] = useState("");
+  const inputRef = useRef(null);
+
+ const alertConInfo = () => {
+  alert(`Valor del input1: ${compound}\nValor del input2: ${result} \nValor del input2: ${input2compound}`);
+}
+
+
+  const toggleInput = () => {
+    setSelectorState(!selectorState);
+  };
+
+  const handleInputClick = () => {
+    setSelectorState(true);
+  };
+
+  const leaveInput = (e) => {
+    if (!inputRef.current.contains(e.target)) {
       setSelectorState(false);
-    };
+    }
+  };
 
-    function setInput1PlaceHolder(selectedOption){
-        let message = "Vacio"
-        if(selectedOption == "Calcular Moles"){
-            message = "Masa Molar"
-        }
-        if(selectedOption == "Calcular Moleculas"){
-            message = "C.Avogadro"
-        }
-        if(selectedOption == "Calcular Gramos"){
-            message = "Masa Molar"
-        }
-        if(selectedOption == "Calcular Pje"){
-            message = "Masa Molar"
-        }
-        return message
+  const handleOptionClick = (option) => {
+    setSelectedOption(option);
+    setSelectorState(false);
+  };
+
+  const input2value = (e) => {
+    const newValue = e.target.value;
+    setNewInput2Value(newValue)
+  }
+
+
+
+  const handleCompoundChange = (e) => {
+    const newCompound = e.target.value;
+    setCompound(newCompound);
+    if (selectedOption === "Calcular Moles" && getInput1Placeholder() === "Masa Molar" || "Calcular Gramos" && getInput1Placeholder() === "Masa Molar"|| "Calcular Pje" && getInput1Placeholder() === "Masa Molar") {
+      const newResult = calculateMolecularMass(newCompound);
+      setResult(newResult); 
+    } 
+    else {
+      const newResult = "6.022×10^23";
+      setResult(newResult)
     }
-    function setInput2PlaceHolder(selectedOption){
-        let message = "holaa"
-        if(selectedOption == "Calcular Moles"){
-            message = "Masa Sustancia"
-        }
-        if(selectedOption == "Calcular Moleculas"){
-            message = "C.Moles"
-        }
-        if(selectedOption == "Calcular Gramos"){
-            message = "C.Moles"
-        }
-        if(selectedOption == "Calcular Pje"){
-            message = "C.Moles"
-        }
-        return message
+  };
+
+  const calculateMolecularMass = (formula) => {
+    const elementRegex = /([A-Z][a-z]*)(\d*)/g;
+    let match;
+    let totalMass = 0;
+
+    while ((match = elementRegex.exec(formula)) !== null) {
+      const element = match[1];
+      const quantity = parseInt(match[2], 10) || 1;
+      const elementInfo = elementsData[element];
+
+      if (elementInfo) {
+        totalMass += elementInfo.atomicMass * quantity;
+      } else {
+        return 'Compuesto no valido';
+      }
     }
-    
+
+    return `${totalMass.toFixed(3)} g/Mol`;
+  };
+
+  const getInput1Placeholder = () => {
+    let placeholder = "Seleccionar Tipo de Calculo";
+    if (selectedOption === "Calcular Moles") {
+      placeholder = "Masa Molar";
+    }
+    if (selectedOption === "Calcular Moleculas") {
+      placeholder = "C.Avogadro";
+    }
+    if (selectedOption === "Calcular Gramos") {
+      placeholder = "Masa Molar";
+    }
+    if (selectedOption === "Calcular Pje") {
+      placeholder = "Masa Molar";
+    }
+    return placeholder;
+  };
+
+  const getInput2Placeholder = () => {
+    let placeholder = "Seleccionar Tipo de Calculo";
+    if (selectedOption === "Calcular Moles") {
+      placeholder = "Masa Sustancia";
+    }
+    if (selectedOption === "Calcular Moleculas") {
+      placeholder = "C.Moles";
+    }
+    if (selectedOption === "Calcular Gramos") {
+      placeholder = "C.Moles";
+    }
+    if (selectedOption === "Calcular Pje") {
+      placeholder = "C.Moles";
+    }
+    return placeholder;
+  };
+
+  
   return (
     <>
       <div className="operation-box" onMouseLeave={leaveInput}>
-            <input placeholder="Compuesto Quimico Ejemplo: H2O"/>
-            <input
-              ref={inputRef}
-              value={selectedOption}
-              onFocus={toggleInput}
-              onClick={handleInputClick}
-              readOnly
-              placeholder="Tipo de calculo"
-            />
-            <div className={selectorState ? "selector" : "selector-none"}>
-              <ul>
-                <li onClick={() => handleOptionClick("Calcular Moles")}>Calcular Moles</li>
-                <li onClick={() => handleOptionClick("Calcular Moleculas")}>Calcular Moleculas</li>
-                <li onClick={() => handleOptionClick("Calcular Gramos")}>Calcular Gramos</li>
-                <li onClick={() => handleOptionClick("Calcular Pje")}>Calcular % Molar</li>
-              </ul>
-            </div>
-            <div className="inputs50">
-              <input placeholder={setInput1PlaceHolder(selectedOption)}/>
-              <input placeholder={setInput2PlaceHolder(selectedOption)}/>
-            </div>
-            <button>Calcular</button>
-          </div>
+        <input
+          placeholder="Compuesto Quimico Ejemplo: H2O"
+          value={compound}
+          onChange={handleCompoundChange}
+        />
+        <input
+          ref={inputRef}
+          value={selectedOption}
+          onFocus={toggleInput}
+          onClick={handleInputClick}
+          readOnly
+          placeholder="Tipo de calculo"
+        />
+        <div className={selectorState ? "selector" : "selector-none"}>
+          <ul>
+            <li onClick={() => handleOptionClick("Calcular Moles")}>Calcular Moles</li>
+            <li onClick={() => handleOptionClick("Calcular Moleculas")}>Calcular Moleculas</li>
+            <li onClick={() => handleOptionClick("Calcular Gramos")}>Calcular Gramos</li>
+            <li onClick={() => handleOptionClick("Calcular Pje")}>Calcular % Molar</li>
+          </ul>
+        </div>
+        <div className="inputs50">
+          <input placeholder={getInput1Placeholder()} value={result} />
+          <input placeholder={getInput2Placeholder()} value={input2compound} onChange={input2value}/>
+        </div>
+        <button onClick={()=> alertConInfo()}>Calcular</button>
+      </div>
     </>
-  )
-}
+  );
+};
+
+export default InputConfig;

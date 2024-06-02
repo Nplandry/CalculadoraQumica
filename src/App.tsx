@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import  { InputConfig } from './components/InputConfig.jsx'
+import  InputConfig from './components/InputConfig.jsx'
 function App() {
 
 
