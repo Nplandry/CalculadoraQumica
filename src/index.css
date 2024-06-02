@@ -98,13 +98,22 @@ html, body {
   border: none;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); 
   font-size: 20px;
+  cursor: pointer;
+}
+
+.operation-box .info-btn{
+  background-color: #555;
+  margin-left: 435px;
+  width: 240px;
 }
 
 .operation-box button:hover {
   box-shadow: 0px 3px 10px #03A9F4;
   transition: .3s; 
 }
-
+.operation-box .info-btn:hover{
+  box-shadow: 0px 3px 10px #555;
+}
 /* Inicio Selector Desplegable */
 .operation-box .selector {
   display: flex;
@@ -318,3 +327,4 @@ html, body {
     text-align: center;
   }
 }
+

@@ -10,7 +10,8 @@ const InputConfig = () => {
   const inputRef = useRef(null);
 
  const alertConInfo = () => {
-  alert(`Valor del input1: ${compound}\nValor del input2: ${result} \nValor del input2: ${input2compound}`);
+  alert(`Valor del input1: ${compound}\nValor del input2: ${result} \nValor del input2: ${input2compound}
+   \nel resultado de los moles es igual a ${parseFloat(result) * input2compound} MOL` );
 }
 
 
@@ -137,6 +138,7 @@ const InputConfig = () => {
           <input placeholder={getInput2Placeholder()} value={input2compound} onChange={input2value}/>
         </div>
         <button onClick={()=> alertConInfo()}>Calcular</button>
+        <button className="info-btn">Sobre el Compuesto</button>
       </div>
     </>
   );
