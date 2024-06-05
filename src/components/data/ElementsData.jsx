@@ -263,7 +263,7 @@ const elementsData = {
       symbol: 'Sr', 
       atomicMass: 87.62, 
       atomicNumber: 38, 
-      stateAtRoomTemp: 'Sólido' 
+      stateAtRoomTemp: 'Sólido'
     },
     Y: { 
       name: 'Itrio', 
