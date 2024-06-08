@@ -74,7 +74,7 @@ const InputConfig = () => {
       },
       "Calcular Pje": {
         placeholder: "Masa Molar",
-        content: "Calcular Pje"
+        content: ""
       },
     };
 
@@ -101,11 +101,12 @@ const InputConfig = () => {
     mantissa = Number(mantissa).toFixed(2); // Verificar de que la mantisa tenga 2 decimales
     exponent = parseInt(exponent); // Convertir el exponente a un entero
     
-    // Crear nueva cadena con interpolacion de strings
+    // Crear nueva cadena con interpolacion
     let formattedString = `${mantissa}X10^${exponent}`;
   
     return formattedString;
   };
+  
 
   const calculoGramos = () => {
     let resultado = `Calculo de gramos: ${parseFloat(result) * input2compound}`;
