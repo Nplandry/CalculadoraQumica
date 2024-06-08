@@ -64,6 +64,10 @@ const InputConfig = () => {
         placeholder: "Masa Molar",
         content: calculoMoles()
       },
+      "Calcular Moleculas": {
+        placeholder: "N.Avogadro",
+        content: calculoMoleculas()
+      },
       "Calcular Gramos": {
         placeholder: "Masa Molar",
         content: calculoGramos()
@@ -72,10 +76,6 @@ const InputConfig = () => {
         placeholder: "Masa Molar",
         content: "Calcular Pje"
       },
-      "Calcular Moleculas": {
-        placeholder: "C.Avogadro",
-        content: calculoMoleculas()
-      }
     };
 
     const selected = optionsMap[selectedOption];
@@ -92,8 +92,19 @@ const InputConfig = () => {
   };
 
   const calculoMoleculas = () => {
-    let resultado = `Calculo de moleculas: ${6.022e23 * input2compound}`;
-    return resultado;
+    let resultado = `Calculo de moleculas: ${6.02214076e23 * input2compound}`;
+    resultado = JSON.parse(resultado.split(" ")[3])
+    let simplifiedNum = resultado.toExponential(2); // Redondea a 3 cifras, mostrando 2 decimales
+    
+    // Convertir a una cadena y extraer la mantisa y exponente
+    let [mantissa, exponent] = simplifiedNum.split('e');
+    mantissa = Number(mantissa).toFixed(2); // Verificar de que la mantisa tenga 2 decimales
+    exponent = parseInt(exponent); // Convertir el exponente a un entero
+    
+    // Crear nueva cadena con interpolacion de strings
+    let formattedString = `${mantissa}X10^${exponent}`;
+  
+    return formattedString;
   };
 
   const calculoGramos = () => {
